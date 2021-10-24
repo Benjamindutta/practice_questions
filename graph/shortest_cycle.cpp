@@ -33,67 +33,48 @@ void c_p_c()
 	freopen("output.txt", "w", stdout);
 #endif
 }
-template<typename T>
-class Graph {
-	map<T, list<T>> l;
-public:
-	void addedge(int x, int y) {
-		l[x].push_back(y);
-		l[y].push_back(x);
-	}
-	void dfs(T src, map<T, bool> &visited, int &count) {
-		visited[src] = true;
-		for (auto nodes : l[src]) {
-			if (visited[nodes] == false) {
-				count++;
-				dfs(nodes, visited, count);
+// int N = 100005;
+vector<int> graph[100005];
+void addedge(int x, int y) {
+	graph[x].push_back(y);
+	graph[y].push_back(x);
+}
+
+void bfs(int src, int n, int &ans) {
+	vector<int> dist(n + 1, INT_MAX);
+	dist[src] = 0;
+	queue<int> q;
+	q.push(src);
+	while (!q.empty()) {
+		int cur = q.front();
+		q.pop();
+		for (auto node : graph[cur]) {
+			if (dist[node] == INT_MAX) {
+				q.push(node);
+				dist[node] = dist[cur] + 1;
+			} else if (dist[node] >= dist[cur]) {
+				ans = min(ans, dist[node] + dist[cur] + 1);
 			}
 		}
 	}
-	int nCr(int n, int r)
-	{
-		return fact(n) / (fact(r) * fact(n - r));
-	}
 
-// Returns factorial of n
-	int fact(int n)
-	{
-		int res = 1;
-		for (int i = 2; i <= n; i++)
-			res = res * i;
-		return res;
-	}
-	int no_ways_to_moon(int n) {
-		map<T, bool> visited;
-		for (auto p : l) {
-			T nodes = p.first;
-			visited[nodes] = false;
-		}
-		int sum = 0;
-		for (auto node : l) {
-			if (visited[node] == false) {
-				int count = 0;
-				dfs(node, visited, count);
-				sum += nCr(count, 2);
-			}
-		}
-		int total = nCr(n, 2);
-		int ways = total - sum;
-		return ways;
-	}
-
-
-};
+}
 int32_t main()
 {
 	c_p_c();
-	int n, k; cin >> n >> k;
-	Graph<int> g;
-	for (int i = 0; i < k; i++) {
-		int x, y;
-		g.addedge(x, y);
+	int n, m; cin >> n >> m;
+	for (int i = 0; i < m; i++) {
+		int x, y; cin >> x >> y;
+		addedge(x, y);
 	}
-	cout << g.no_ways_to_moon(n);
-
+	int ans = n + 1;
+	for (int i = 1; i <= n; i++) {
+		bfs(i, n, ans);
+	}
+	if (ans != n + 1) {
+		cout << "shortest cycle " << ans << endl;
+	} else {
+		cout << "no cycle" << endl;
+	}
 	return 0;
 }

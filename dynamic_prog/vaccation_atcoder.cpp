@@ -33,67 +33,27 @@ void c_p_c()
 	freopen("output.txt", "w", stdout);
 #endif
 }
-template<typename T>
-class Graph {
-	map<T, list<T>> l;
-public:
-	void addedge(int x, int y) {
-		l[x].push_back(y);
-		l[y].push_back(x);
+int solve(int n, vector<vector<int>> h_value) {
+	int dp[n + 1][3];
+	memset(dp, 0, sizeof(dp));
+	dp[1][0] = h_value[1][0];
+	dp[1][1] = h_value[1][1];
+	dp[1][2] = h_value[1][2];
+	for (int i = 2; i <= n; i++) {
+		dp[i][0] = h_value[i][0] + max(dp[i - 1][1], dp[i - 1][2]);
+		dp[i][1] = h_value[i][1] + max(dp[i - 1][0], dp[i - 1][2]);
+		dp[i][2] = h_value[i][2] + max(dp[i - 1][0], dp[i - 1][1]);
 	}
-	void dfs(T src, map<T, bool> &visited, int &count) {
-		visited[src] = true;
-		for (auto nodes : l[src]) {
-			if (visited[nodes] == false) {
-				count++;
-				dfs(nodes, visited, count);
-			}
-		}
-	}
-	int nCr(int n, int r)
-	{
-		return fact(n) / (fact(r) * fact(n - r));
-	}
-
-// Returns factorial of n
-	int fact(int n)
-	{
-		int res = 1;
-		for (int i = 2; i <= n; i++)
-			res = res * i;
-		return res;
-	}
-	int no_ways_to_moon(int n) {
-		map<T, bool> visited;
-		for (auto p : l) {
-			T nodes = p.first;
-			visited[nodes] = false;
-		}
-		int sum = 0;
-		for (auto node : l) {
-			if (visited[node] == false) {
-				int count = 0;
-				dfs(node, visited, count);
-				sum += nCr(count, 2);
-			}
-		}
-		int total = nCr(n, 2);
-		int ways = total - sum;
-		return ways;
-	}
-
-
-};
+	return max(max(dp[n][0], dp[n][1]), dp[n][2]);
+}
 int32_t main()
 {
 	c_p_c();
-	int n, k; cin >> n >> k;
-	Graph<int> g;
-	for (int i = 0; i < k; i++) {
-		int x, y;
-		g.addedge(x, y);
+	int n;
+	vector<vector<int>> h_value(n + 1, vector<int>(3, 0));
+	for (int i = 1; i <= n; i++) {
+		cin >> h_value[i][0] >> h_value[i][1] >> h_value[i][2];
 	}
-	cout << g.no_ways_to_moon(n);
-
+	cout << solve(n, h_value) << endl;
 	return 0;
 }

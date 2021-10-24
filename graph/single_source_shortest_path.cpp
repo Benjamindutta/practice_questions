@@ -35,65 +35,49 @@ void c_p_c()
 }
 template<typename T>
 class Graph {
+	int v;
 	map<T, list<T>> l;
 public:
+	// Graph(int v) {
+	// 	this->v = v;
+	// }
 	void addedge(int x, int y) {
 		l[x].push_back(y);
 		l[y].push_back(x);
 	}
-	void dfs(T src, map<T, bool> &visited, int &count) {
-		visited[src] = true;
-		for (auto nodes : l[src]) {
-			if (visited[nodes] == false) {
-				count++;
-				dfs(nodes, visited, count);
-			}
-		}
-	}
-	int nCr(int n, int r)
-	{
-		return fact(n) / (fact(r) * fact(n - r));
-	}
-
-// Returns factorial of n
-	int fact(int n)
-	{
-		int res = 1;
-		for (int i = 2; i <= n; i++)
-			res = res * i;
-		return res;
-	}
-	int no_ways_to_moon(int n) {
-		map<T, bool> visited;
+	void shortest_path(T src) {
+		map<T, int> dist;
+		queue<T> q;
 		for (auto p : l) {
-			T nodes = p.first;
-			visited[nodes] = false;
+			dist[p.first] = INT_MAX;
 		}
-		int sum = 0;
-		for (auto node : l) {
-			if (visited[node] == false) {
-				int count = 0;
-				dfs(node, visited, count);
-				sum += nCr(count, 2);
+		dist[src] = 0;
+		q.push(src);
+		while (!q.empty()) {
+			T node = q.front();
+			q.pop();
+			for (auto nodes : l[node]) {
+				if (dist[nodes] == INT_MAX) {
+					dist[nodes] = dist[node] + 1;
+					q.push(nodes);
+				}
 			}
 		}
-		int total = nCr(n, 2);
-		int ways = total - sum;
-		return ways;
+		for (auto node_pair : l) {
+			T node = node_pair.first;
+			int d = dist[node];
+			cout << "node " << node << " distance " << d << endl;
+		}
+
 	}
-
-
 };
 int32_t main()
 {
 	c_p_c();
-	int n, k; cin >> n >> k;
 	Graph<int> g;
-	for (int i = 0; i < k; i++) {
-		int x, y;
-		g.addedge(x, y);
-	}
-	cout << g.no_ways_to_moon(n);
-
+	g.addedge(1, 2);
+	g.addedge(2, 3);
+	g.addedge(2, 4);
+	g.shortest_path(1);
 	return 0;
 }

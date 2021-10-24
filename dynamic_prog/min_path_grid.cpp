@@ -33,24 +33,9 @@ void c_p_c()
     freopen("output.txt", "w", stdout);
 #endif
 }
-//ans
-int dx[] = {0, 1, 0, -1};
-int dy[] = { -1, 0, 1, 0};
-void floodfill(int i, int j, vector<vector<ch>> inp, char ch_to_re, char color) {
-    if (i >= r || j >= c || i < 0 || j < 0) {
-        return;
-    }
-    if (inp[i][j] != ch) {
-        return;
-    }
-    inp[i][j] = color;
-    for (int k = 0; k < 4; k++) {
-        floodfill(i + dx[k], j + dy[k], inp, ch_to_re, color);
-    }
-}
+int
 int32_t main()
 {
     c_p_c();
-    //take input for the
     return 0;
 }

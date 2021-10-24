@@ -33,67 +33,24 @@ void c_p_c()
 	freopen("output.txt", "w", stdout);
 #endif
 }
-template<typename T>
-class Graph {
-	map<T, list<T>> l;
-public:
-	void addedge(int x, int y) {
-		l[x].push_back(y);
-		l[y].push_back(x);
-	}
-	void dfs(T src, map<T, bool> &visited, int &count) {
-		visited[src] = true;
-		for (auto nodes : l[src]) {
-			if (visited[nodes] == false) {
-				count++;
-				dfs(nodes, visited, count);
+//rat can go only in right and down steps
+int rat_steps(int r, int c) {
+	int dp[r][c];
+	for (int i = 0; i < r; i++) {
+		for (int j = 0; j < c; j++) {
+			if (i == 0 || j == 0) {
+				dp[i][j] = 1; //because 1st column and row can be only reached by one steps
+			} else {
+				dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
 			}
 		}
 	}
-	int nCr(int n, int r)
-	{
-		return fact(n) / (fact(r) * fact(n - r));
-	}
-
-// Returns factorial of n
-	int fact(int n)
-	{
-		int res = 1;
-		for (int i = 2; i <= n; i++)
-			res = res * i;
-		return res;
-	}
-	int no_ways_to_moon(int n) {
-		map<T, bool> visited;
-		for (auto p : l) {
-			T nodes = p.first;
-			visited[nodes] = false;
-		}
-		int sum = 0;
-		for (auto node : l) {
-			if (visited[node] == false) {
-				int count = 0;
-				dfs(node, visited, count);
-				sum += nCr(count, 2);
-			}
-		}
-		int total = nCr(n, 2);
-		int ways = total - sum;
-		return ways;
-	}
-
-
-};
+	return dp[r - 1][c - 1];
+}
 int32_t main()
 {
 	c_p_c();
-	int n, k; cin >> n >> k;
-	Graph<int> g;
-	for (int i = 0; i < k; i++) {
-		int x, y;
-		g.addedge(x, y);
-	}
-	cout << g.no_ways_to_moon(n);
-
+	int r, c; cin >> r >> c;
+	cout << rat_steps(r, c) << endl;
 	return 0;
 }

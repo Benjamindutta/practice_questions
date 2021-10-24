@@ -33,24 +33,42 @@ void c_p_c()
     freopen("output.txt", "w", stdout);
 #endif
 }
-//ans
-int dx[] = {0, 1, 0, -1};
-int dy[] = { -1, 0, 1, 0};
-void floodfill(int i, int j, vector<vector<ch>> inp, char ch_to_re, char color) {
-    if (i >= r || j >= c || i < 0 || j < 0) {
-        return;
+int elphant_ways(int r, int c) {
+    int dp[r][c] = {0};
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c; j++) {
+            if (i == 0 && j == 0) {
+                dp[i][j] = 1;
+            } else if (i == 0) {
+                int sum = 0;
+                for (int k = 0; k < j; k++) {
+                    sum += dp[0][k];
+                }
+                dp[i][j] = sum;
+            } else if (j == 0) {
+                int sum = 0;
+                for (int k = 0; k < i; k++) {
+                    sum += dp[k][0];
+                }
+                dp[i][j] = sum;
+            } else {
+                int sum = 0;
+                for (int k = 0; k < i; k++) {
+                    sum += dp[k][j];
+                }
+                for (int k = 0; k < j; k++) {
+                    sum += dp[i][k];
+                }
+                dp[i][j] = sum;
+            }
+        }
     }
-    if (inp[i][j] != ch) {
-        return;
-    }
-    inp[i][j] = color;
-    for (int k = 0; k < 4; k++) {
-        floodfill(i + dx[k], j + dy[k], inp, ch_to_re, color);
-    }
+    return dp[r - 1][c - 1];
 }
 int32_t main()
 {
     c_p_c();
-    //take input for the
+    int r, c; cin >> r >> c;
+    cout << elphant_ways(r, c) << endl;
     return 0;
 }
